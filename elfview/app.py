@@ -40,7 +40,9 @@ class ELFViewApp:
         self.compilation_units_order = None
 
     def cleanup(self):
+        curses.nocbreak()
         curses.echo()
+        self.stdscr.keypad(False)
         CursorState.NORMAL.set()
 
     def __process_input(self, ch):
@@ -106,6 +108,12 @@ class ELFViewApp:
 
                 # Refresh screen
                 self.stdscr.refresh()
+
+                # Disable line buffering & echoing, enable special key processing
+                # FIXME: This is a workaround, if done at initialization, stops working
+                curses.cbreak()
+                curses.noecho()
+                self.stdscr.keypad(True)
 
                 # Process input
                 self.__process_input(self.stdscr.getch())
